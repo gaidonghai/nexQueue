@@ -76,8 +76,8 @@ class Queue {
                 this.logger(`${processorId}: failed with error ${task.error}`)
                 this.failed.push(task)
             } else {
-                let msg = `${processorId}: finished`;
-                if (task.specials.length > 0) msg += ` (${task.specials.join(',')})`
+                let msg = `${processorId}: ${task.id} finished in ${task.statusMessage.duration} seconds`;
+                if (task.specials.length > 0) msg += ` note:${task.statusMessage.specials}`
                 this.logger(msg);
                 this.finished.push(task);
             }
