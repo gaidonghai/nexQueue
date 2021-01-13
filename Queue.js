@@ -1,11 +1,12 @@
 const fs = require('fs');
 const path = require('path');
+const Task =require('./Task')
 
 class Queue {
     constructor(options) {
 
         //set options
-        this.concurrency = options.concurrency||1;
+        this.concurrency = options.concurrency || 1;
         this.forceRerun = options.forceRerun || false;
         this.logger = options.logger || console.log.bind(console);
         this.statusFile = options.statusFile;
@@ -13,21 +14,22 @@ class Queue {
         this.statusFrequency = options.statusFrequency || 1000;
 
         //Initialization
+        this.allTasks = [];
         this.todo = [];
         this.finished = [];
         this.failed = [];
         this.processors = {};
         this.processorPromises = [];
 
-        this.taskCount = 0;
     }
 
     enqueue(workFunction, options) {
         //Queue-wise forceRerun shall override if set
         options.forceRerun = this.forceRerun || options.forceRerun
-        if (!options.id) options.id= `TASK-${this.taskCount+1}`
-        this.todo.push(new Task(workFunction, options));
-        this.taskCount++;
+        if (!options.id) options.id = `TASK-${this.allTasks.length + 1}`
+        let newTask = new Task(workFunction, options)
+        this.todo.push(newTask);
+        this.allTasks.push(newTask);
     }
 
     async start() {
@@ -43,32 +45,14 @@ class Queue {
     statusUpdater() {
         let data = ''
         data += 'Logged at: ' + new Date() + '\n\n';
-        data += 'Processor status:\n'
+        data += 'Processors:\n'
         Object.entries(this.processors).forEach(([processor, task]) => {
             data += `${processor}: ${task ? task.id : '<null>'}\n`
         })
         data += '\n'
 
-        data += 'To-do:\n'
-        this.todo.forEach(task => {
-            data += `${task.id}\n`
-        })
-        data += '--------\n\n'
-
-        data += 'Finished:\n'
-        this.finished.forEach(task => {
-            data += `${task.id}`
-            if (task.specials.length > 0) data += `: (${task.specials.join(', ')})`;
-            data += '\n'
-        })
-        data += '--------\n\n'
-
-        data += 'Failed:\n'
-        this.failed.forEach(task => {
-            data += `${task.id}: ${task.specials.join(', ')}, `;
-            data += `${task.error}\n`;
-        })
-        data += '--------\n\n'
+        data += 'Tasks:\n'
+        data += this.allTasks.map(o => o.statusMessageCSV()).join('\n');
 
         if (this.statusFile) fs.writeFileSync(this.statusFile, data)
         if (this.statusHistory) fs.writeFileSync(path.join(this.statusHistory, `${Date.now()}.txt`), data)
@@ -103,49 +87,5 @@ class Queue {
     }
 }
 
-class Task {
-    constructor(workFunction, options) {
-        this.workFunction = workFunction; //mandatory
-        this.id = options.id; //will be automatically generated as TASK-xx if ignored
-
-        if (options.doneChecker) {
-            this.doneChecker = options.doneChecker;
-        } else {
-            this.doneChecker = () => false;
-        }
-        this.forceRerun = options.forceRerun || false;
-        this.timeOut = options.timeOut;
-
-        //Initialization
-        this.specials = [];
-    }
-
-
-    async run() {
-
-        this.doneCheck = this.doneChecker();
-        if (this.doneCheck) {
-            this.specials.push('previously done')
-        }
-
-        this.rerun = this.doneCheck && this.forceRerun;
-        if (this.rerun) {
-            this.specials.push('rerun applied')
-        }
-
-        this.acutalWork = !this.doneCheck || this.rerun;
-        if (this.acutalWork) {
-            try {
-                this.returnValue = await this.workFunction()
-            } catch (err) {
-                this.specials.push('failed');
-                this.error = err;
-            }
-        } else {
-            this.specials.push('skipped')
-        }
-
-    }
-}
 
 module.exports = Queue;
