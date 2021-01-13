@@ -23,7 +23,7 @@ let queue = new Queue({
     logger: console.log.bind(console), //same if leave undefined
     statusFile: path.join(__dirname, 'status.txt'),
     statusFrequency: 1000,
-    statusHistory:path.join(__dirname, 'history'),
+    statusHistory:path.join(__dirname, 'logs'),
 })
 
 //Create jobs

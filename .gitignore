@@ -6,7 +6,6 @@ results
 
 # Logs
 logs
-history
 status.txt
 *.log
 npm-debug.log*
