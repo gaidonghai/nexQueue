@@ -53,7 +53,7 @@ class Task {
         let message = {};
         message.id = this.id;
         message.status = this.status//.padEnd(12, ' ');
-        message.startAt = this.startAt ? new Date(this.startAt).toISOString();
+        message.startAt = this.startAt ? new Date(this.startAt).toISOString():'';
         message.duration = this.duration;
         message.specials = this.specials.length?'[' + this.specials.join(' ') + ']':'';
         message.error = this.error ? this.error.toString() : undefined;
