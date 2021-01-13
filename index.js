@@ -5,7 +5,7 @@ class Queue {
     constructor(options) {
 
         //set options
-        this.concurrency = options.concurrency;
+        this.concurrency = options.concurrency||1;
         this.forceRerun = options.forceRerun || false;
         this.logger = options.logger || console.log.bind(console);
         this.statusFile = options.statusFile;
