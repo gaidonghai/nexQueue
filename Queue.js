@@ -1,4 +1,4 @@
-const fs = require('fs');
+const nexFs = require('nexfs');
 const path = require('path');
 const Task =require('./Task')
 
@@ -54,8 +54,8 @@ class Queue {
         data += 'Tasks:\n'
         data += this.allTasks.map(o => o.statusMessageCSV()).join('\n');
 
-        if (this.statusFile) fs.writeFileSync(this.statusFile, data)
-        if (this.statusHistory) fs.writeFileSync(path.join(this.statusHistory, `${Date.now()}.txt`), data)
+        if (this.statusFile) nexFs.writeFileSync(this.statusFile, data)
+        if (this.statusHistory) nexFs.writeFileSync(path.join(this.statusHistory, `${Date.now()}.txt`), data)
 
         //Repeat this 1 seconds later if there are still work to be done:
         if (!Object.values(this.processors).every(o => o === null))

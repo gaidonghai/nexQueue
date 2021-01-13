@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/gaidonghai/nexQueue/issues"
   },
-  "homepage": "https://github.com/gaidonghai/nexQueue#readme"
+  "homepage": "https://github.com/gaidonghai/nexQueue#readme",
+  "dependencies": {
+    "nexfs": "^0.1.1"
+  }
 }
