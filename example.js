@@ -42,7 +42,7 @@ function createWork(i) {
     if (i != 13) {
         return async function () {
             //Write empty file
-            fs.writeFileSync(path.join(targetPath, `${i + 1}.txt`), '');
+            fs.writeFileSync(path.join(targetPath, `${i}.txt`), '');
             //Create a deliberate delay for observation.
             await sleep(2000);
 
