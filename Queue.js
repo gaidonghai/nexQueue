@@ -57,7 +57,7 @@ class Queue {
         if (this.statusFile) nexFs.writeFileSync(this.statusFile, data)
         if (this.statusHistory) nexFs.writeFileSync(path.join(this.statusHistory, `${Date.now()}.txt`), data)
 
-        //Repeat this 1 seconds later if there are still work to be done:
+        //Repeat this later after if there are still work to be done:
         if (!Object.values(this.processors).every(o => o === null))
             setTimeout(this.statusUpdater.bind(this), this.statusFrequency);
 
