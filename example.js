@@ -22,7 +22,7 @@ let queue = new Queue({
     forceRerun: false,
     logger: console.log.bind(console), //same if leave undefined
     statusFile: path.join(__dirname, 'status.txt'),
-    statusFrequency: 1000,
+    statusFrequency: 60000,
     statusHistory:path.join(__dirname, 'logs'),
 })
 

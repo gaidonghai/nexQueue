@@ -20,6 +20,7 @@ class Queue {
         this.failed = [];
         this.processors = {};
         this.processorPromises = [];
+        this.statusTimeOutId=undefined;
 
     }
 
@@ -59,7 +60,7 @@ class Queue {
 
         //Repeat this later after if there are still work to be done:
         if (!Object.values(this.processors).every(o => o === null))
-            setTimeout(this.statusUpdater.bind(this), this.statusFrequency);
+            this.statusTimeOutId=setTimeout(this.statusUpdater.bind(this), this.statusFrequency);
 
     }
 
@@ -84,6 +85,8 @@ class Queue {
             this.processors[processorId] = null;
         }
         this.logger(`${processorId}: todo list empty, exiting`);
+        clearTimeout(this.statusTimeOutId);
+        this.statusUpdater();
     }
 }
 
