@@ -40,6 +40,8 @@ class Queue {
 
         if (this.statusFile) await this.statusUpdater();
         await Promise.all(this.processorPromises);
+        //Make one final update before closing.
+        this.statusUpdater();
         return ('All Done');
     }
 
@@ -86,7 +88,6 @@ class Queue {
         }
         this.logger(`${processorId}: todo list empty, exiting`);
         clearTimeout(this.statusTimeOutId);
-        this.statusUpdater();
     }
 }
 
