@@ -76,7 +76,7 @@ class Queue {
             let runResult = await task.run(this.forceRerun);
 
             if (task.error) {
-                this.logger(`${processorId}: failed with error ${task.error}`)
+                this.logger(`${processorId}: ${task.id} failed with error ${task.error}`)
                 this.failed.push(task)
             } else {
                 let msg = `${processorId}: ${task.id} finished in ${task.statusMessage.duration} seconds`;
